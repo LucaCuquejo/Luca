@@ -56,7 +56,7 @@ export default function HomeScreen({ navigation }: any) {
         {
           id: '1',
           type: 'morning_message',
-          title: 'Today's Thought',
+          title: "Today's Thought",
           body: 'Every step forward, no matter how small, is still progress.',
           isPremium: false,
         },
@@ -64,7 +64,7 @@ export default function HomeScreen({ navigation }: any) {
           id: '2',
           type: 'reflection',
           title: 'Reflection Prompt',
-          body: 'What's one thing you can control today?',
+          body: "What's one thing you can control today?",
           isPremium: false,
         },
       ]);
