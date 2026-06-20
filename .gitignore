@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.expo/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+.env.production
+backend/.env
+
+# Expo
+.expo/
+web-build/
+
+# iOS
+ios/build/
+ios/Pods/
+*.xcworkspace
+*.xcodeproj/xcshareddata/
+
+# Android
+android/build/
+android/app/build/
+*.keystore
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Certs
+certs/
+*.p8
+*.pem
+*.key
+
+# Test coverage
+coverage/
