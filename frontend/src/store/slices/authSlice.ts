@@ -1,6 +1,22 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 import { apiClient } from '@/services/api';
+
+const storage = {
+  async getItem(key: string): Promise<string | null> {
+    if (Platform.OS === 'web') return localStorage.getItem(key);
+    return SecureStore.getItemAsync(key);
+  },
+  async setItem(key: string, value: string): Promise<void> {
+    if (Platform.OS === 'web') { localStorage.setItem(key, value); return; }
+    return SecureStore.setItemAsync(key, value);
+  },
+  async deleteItem(key: string): Promise<void> {
+    if (Platform.OS === 'web') { localStorage.removeItem(key); return; }
+    return SecureStore.deleteItemAsync(key);
+  },
+};
 
 export interface UserProfile {
   id: string;
@@ -50,8 +66,8 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await apiClient.post('/auth/login', credentials);
       const { user, access_token, refresh_token } = response.data;
-      await SecureStore.setItemAsync('access_token', access_token);
-      await SecureStore.setItemAsync('refresh_token', refresh_token);
+      await storage.setItem('access_token', access_token);
+      await storage.setItem('refresh_token', refresh_token);
       return { user, access_token };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Login failed');
@@ -68,8 +84,8 @@ export const registerUser = createAsyncThunk(
     try {
       const response = await apiClient.post('/auth/register', data);
       const { user, access_token, refresh_token } = response.data;
-      await SecureStore.setItemAsync('access_token', access_token);
-      await SecureStore.setItemAsync('refresh_token', refresh_token);
+      await storage.setItem('access_token', access_token);
+      await storage.setItem('refresh_token', refresh_token);
       return { user, access_token };
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Registration failed');
@@ -78,7 +94,7 @@ export const registerUser = createAsyncThunk(
 );
 
 export const loadStoredAuth = createAsyncThunk('auth/loadStored', async () => {
-  const token = await SecureStore.getItemAsync('access_token');
+  const token = await storage.getItem('access_token');
   if (!token) return null;
   const response = await apiClient.get('/users/me', {
     headers: { Authorization: `Bearer ${token}` },
@@ -88,8 +104,8 @@ export const loadStoredAuth = createAsyncThunk('auth/loadStored', async () => {
 
 export const logoutUser = createAsyncThunk('auth/logout', async () => {
   await apiClient.post('/auth/logout').catch(() => {});
-  await SecureStore.deleteItemAsync('access_token');
-  await SecureStore.deleteItemAsync('refresh_token');
+  await storage.deleteItem('access_token');
+  await storage.deleteItem('refresh_token');
 });
 
 const authSlice = createSlice({
